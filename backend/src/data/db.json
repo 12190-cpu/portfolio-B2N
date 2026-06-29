@@ -1,0 +1,24 @@
+{
+  "products": [
+    {"id":"p1","name":"B2N","category":"Burgers","description":"Pain brioché, Double Cheddar, Steak façon Bouchère, Filet de Poulet frais, Sauce maison","price":8,"image":"/images/placeholder-burger.svg","tags":["burger","poulet","steak","cheddar"]},
+    {"id":"p2","name":"Giant","category":"Burgers","description":"Pain burger, Double Cheddar, Double Steak 90 g, Cornichons, Sauce Giant","price":7,"image":"/images/placeholder-burger.svg","tags":["burger","steak","cheddar"]},
+    {"id":"p3","name":"Chicken","category":"Burgers","description":"Pain burger, Filet de Poulet, Cheddar, Mayonnaise","price":7,"image":"/images/placeholder-burger.svg","tags":["burger","poulet","chicken","cheddar"]},
+    {"id":"p4","name":"Black Beef","category":"Burgers","description":"Pain Black, Steak façon Bouchère, Bacon, Double Vache Qui Rit, Sauce Barbecue / Tabasco","price":8,"image":"/images/placeholder-burger.svg","tags":["burger","beef","steak","bacon"]},
+    {"id":"p5","name":"Tender Extra Crispy","category":"Wraps","description":"Pain Pita, Tenders, Double Cheddar, Crispy Onions, Sauce Maison","price":8,"image":"/images/placeholder-wrap.svg","tags":["wrap","tenders","poulet","cheddar"]},
+    {"id":"p6","name":"Tender Chicken Curry","category":"Wraps","description":"Pain Pita, Chicken, Double Cheddar, Sauce Curry","price":7,"image":"/images/placeholder-wrap.svg","tags":["wrap","poulet","chicken","curry"]},
+    {"id":"p7","name":"Tender Kebab","category":"Wraps","description":"Pain Pita, Kebab, Double Cheddar, Sauce Blanche","price":8,"image":"/images/placeholder-wrap.svg","tags":["wrap","kebab","cheddar"]},
+    {"id":"p8","name":"Pâtes Curry","category":"Plats","description":"Penne, Sauce Curry, Poulet","price":7,"image":"/images/placeholder-plat.svg","tags":["plat","pates","curry","poulet"]},
+    {"id":"p9","name":"Pâtes Boursin","category":"Plats","description":"Penne, Sauce Boursin, Poulet","price":7,"image":"/images/placeholder-plat.svg","tags":["plat","pates","boursin","poulet"]},
+    {"id":"p10","name":"Pâtes Carbonara","category":"Plats","description":"Penne, Sauce Crème Maison, Lardons","price":7,"image":"/images/placeholder-plat.svg","tags":["plat","pates","carbonara","lardons"]},
+    {"id":"p11","name":"Thieb","category":"Plats","description":"Riz rouge, Légumes, Poulet","price":8,"image":"/images/placeholder-plat.svg","tags":["plat","riz","poulet"]},
+    {"id":"p12","name":"Gratin Dauphinois","category":"Plats","description":"Pommes de terre, Crème fraîche, Lardons","price":8,"image":"/images/placeholder-plat.svg","tags":["plat","gratin","lardons"]},
+    {"id":"p13","name":"Tiramisu","category":"Desserts","description":"Framboise, Oreo, Nutella, Daim, Caramel Speculoos","price":3,"image":"/images/placeholder-dessert.svg","tags":["dessert","tiramisu","oreo","nutella"]},
+    {"id":"p14","name":"Cheesecake","category":"Desserts","description":"Oreo, Mangue Passion, Ananas Coco, Framboise","price":4,"image":"/images/placeholder-dessert.svg","tags":["dessert","cheesecake","oreo","mangue"]},
+    {"id":"p15","name":"Boissons","category":"Boissons","description":"Coca-Cola, Coca-Cola Zéro, Fanta, Oasis, 7Up, Sprite, Ice Tea, Schweppes","price":2,"image":"/images/placeholder-drink.svg","tags":["boisson","coca","fanta","oasis","sprite","ice tea"]}
+  ],
+  "sectors": [
+    {"id":"s1","name":"Nord IDF","image":"/images/placeholder-map.svg","whatsapp":"33600000001","snapchat":"burger2nuit.nord","phone":"0600000001","cities":["Cergy","Pontoise","Herblay","Osny","Eragny","Conflans-Sainte-Honorine","Saint-Ouen-l'Aumône","Montigny-lès-Cormeilles","Vauréal","Jouy-le-Moutier","Beauchamp","Pierrelaye","Le Plessis-Bouchard","Courdimanche","Boisemont","Maurecourt"]},
+    {"id":"s2","name":"Nord Est IDF","image":"/images/placeholder-map.svg","whatsapp":"33600000002","snapchat":"burger2nuit.nordest","phone":"0600000002","cities":["Roissy","Sevran","Aulnay","Tremblay","Villepinte","Goussainville","Mitry-Mory","Le Mesnil-Amelot"]},
+    {"id":"s3","name":"Ouest IDF","image":"/images/placeholder-map.svg","whatsapp":"33600000003","snapchat":"burger2nuit.ouest","phone":"0600000003","cities":["Clichy","Levallois","Asnières-sur-Seine","Gennevilliers","Villeneuve-la-Garenne","Colombes","Bois-Colombes","La Garenne-Colombes","Nanterre","Rueil-Malmaison","Suresnes","Puteaux","Neuilly-sur-Seine"]}
+  ]
+}
