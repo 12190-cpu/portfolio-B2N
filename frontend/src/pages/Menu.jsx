@@ -68,7 +68,7 @@ const products = [
     name: "Pâtes Carbonara",
     category: "Plats",
     price: "7,00 €",
-    image: "/images/plats/Penne carbonara.png",
+    image: "/images/plats/Penne carbo.png",
     ingredients: "Penne, Sauce Crème Maison, Lardons"
   },
   {

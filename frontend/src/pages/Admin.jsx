@@ -1,18 +1,53 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { api } from '../api';
-const emptyProduct = { name:'', category:'Burgers', description:'', price:0, image:'/images/placeholder-burger.svg', tags:[] };
-export default function Admin() {
-  const [products, setProducts] = useState([]); const [sectors, setSectors] = useState([]); const [product, setProduct] = useState(emptyProduct); const navigate = useNavigate();
-  const load = () => { api.get('/products').then(r=>setProducts(r.data)); api.get('/sectors').then(r=>setSectors(r.data)); };
-  useEffect(load, []);
-  async function saveProduct(e) { e.preventDefault(); await api.post('/products', {...product, tags: product.description.split(',').map(t=>t.trim())}); setProduct(emptyProduct); load(); }
-  async function removeProduct(id) { await api.delete('/products/'+id); load(); }
-  async function removeSector(id) { await api.delete('/sectors/'+id); load(); }
-  function logout(){ localStorage.removeItem('b2n_token'); navigate('/'); }
-  return <section><div className="page-title"><h1>Dashboard Admin</h1><button className="btn secondary" onClick={logout}>Déconnexion</button></div>
-    <div className="admin-grid"><form className="panel" onSubmit={saveProduct}><h2>Ajouter un produit</h2><input placeholder="Nom" value={product.name} onChange={e=>setProduct({...product,name:e.target.value})}/><select value={product.category} onChange={e=>setProduct({...product,category:e.target.value})}>{['Burgers','Wraps','Plats','Desserts','Boissons'].map(c=><option key={c}>{c}</option>)}</select><textarea placeholder="Description" value={product.description} onChange={e=>setProduct({...product,description:e.target.value})}/><input type="number" step="0.01" placeholder="Prix" value={product.price} onChange={e=>setProduct({...product,price:e.target.value})}/><input placeholder="URL image" value={product.image} onChange={e=>setProduct({...product,image:e.target.value})}/><button className="btn">Ajouter</button></form>
-    <div className="panel"><h2>Produits</h2>{products.map(p=><div className="admin-row" key={p.id}><span>{p.name} — {p.price} €</span><button onClick={()=>removeProduct(p.id)}>Supprimer</button></div>)}</div>
-    <div className="panel"><h2>Secteurs</h2>{sectors.map(s=><div className="admin-row" key={s.id}><span>{s.name}</span><button onClick={()=>removeSector(s.id)}>Supprimer</button></div>)}</div></div>
-  </section>;
+import { useNavigate } from "react-router-dom";
+
+function Admin() {
+  const navigate = useNavigate();
+  const isAdmin = localStorage.getItem("admin");
+
+  if (!isAdmin) {
+    navigate("/login");
+    return null;
+  }
+
+  function logout() {
+    localStorage.removeItem("admin");
+    navigate("/login");
+  }
+
+  return (
+    <main className="page">
+      <h1>Dashboard Admin</h1>
+
+      <button onClick={logout} className="logout-btn">
+        Déconnexion
+      </button>
+
+      <section className="admin-box">
+        <h2>Gestion du menu</h2>
+        <p>
+          Dans cette première version, les produits sont dans le fichier :
+        </p>
+        <code>frontend/src/pages/Menu.jsx</code>
+
+        <p>
+          Pour ajouter un produit, ajoute un nouvel objet dans le tableau
+          <strong> products</strong>.
+        </p>
+      </section>
+
+      <section className="admin-box">
+        <h2>Gestion des secteurs</h2>
+        <p>
+          Les secteurs sont dans le fichier :
+        </p>
+        <code>frontend/src/pages/Sectors.jsx</code>
+
+        <p>
+          Pour modifier une ville, modifie le tableau <strong>sectors</strong>.
+        </p>
+      </section>
+    </main>
+  );
 }
+
+export default Admin;

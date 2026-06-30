@@ -10,7 +10,7 @@ function App() {
     <>
       <nav className="navbar">
         <Link to="/">
-          <img src="/images/logo/logo.png" alt="Burger2Nuit" className="logo" />
+          <img src="/images/logo/LOGO.png" alt="Burger2Nuit" className="logo" />
         </Link>
 
         <div>
