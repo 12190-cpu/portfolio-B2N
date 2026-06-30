@@ -1,8 +1,14 @@
 {
-  "name": "burger2nuit-frontend",
-  "version": "1.0.0",
-  "type": "module",
-  "scripts": { "dev": "vite --host 0.0.0.0", "build": "vite build", "preview": "vite preview" },
-  "dependencies": { "@vitejs/plugin-react": "^4.3.4", "axios": "^1.7.9", "vite": "^6.0.5", "react": "^18.3.1", "react-dom": "^18.3.1", "react-router-dom": "^7.1.1" },
+  "scripts": {
+    "dev": "vite --host 0.0.0.0"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "latest",
+    "vite": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "react-router-dom": "latest",
+    "axios": "latest"
+  },
   "devDependencies": {}
 }
