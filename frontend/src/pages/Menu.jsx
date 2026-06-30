@@ -34,14 +34,14 @@ const products = [
     category: "Wraps",
     price: "8,00 €",
     image: "/images/wraps/crispy.jpg",
-    ingredients: "Pain Pita, Tenders, Double Cheddar, Crispy Onions, Sauce Maison"
+    ingredients: "Pain Pita, Tenders de poulet, Double Cheddar, Crispy Onions, Sauce Maison"
   },
   {
     name: "Tender Chicken Curry",
     category: "Wraps",
     price: "7,00 €",
     image: "/images/wraps/curry.jpg",
-    ingredients: "Pain Pita, Chicken, Double Cheddar, Sauce Curry"
+    ingredients: "Pain Pita, Poulet, Double Cheddar, Sauce Curry"
   },
   {
     name: "Tender Kebab",
@@ -104,7 +104,6 @@ const products = [
     category: "Boissons",
     price: "2,00 €",
     image: "/images/boissons/boissons.png",
-    ingredients: "Boisson fraîche"
   }
 ];
 
