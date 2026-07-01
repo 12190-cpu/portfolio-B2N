@@ -4,25 +4,64 @@ function Home() {
   return (
     <main className="home">
       <section className="hero">
-        <h1>LIVRAISON DE NUIT</h1>
-        <h2>DE 20H À 5H</h2>
-        <p>Burgers, wraps, plats, desserts et boissons livrés la nuit.</p>
+        <div className="hero-content">
+          <p className="badge">Burger2Nuit</p>
 
-        <div className="buttons">
-          <Link to="/menu" className="btn">Voir le menu</Link>
-          <Link to="/secteurs" className="btn secondary">Secteurs de livraison</Link>
+          <h1>LIVRAISON DE NUIT</h1>
+          <h2>DE 20H À 5H</h2>
+
+          <p>
+            Burgers, wraps, plats, desserts et boissons livrés directement dans
+            ton secteur.
+          </p>
+
+          <div className="buttons">
+            <Link to="/menu" className="btn">
+              Voir le menu
+            </Link>
+
+            <Link to="/secteurs" className="btn secondary">
+              Trouver mon secteur
+            </Link>
+          </div>
         </div>
       </section>
 
-      <section className="cards">
-        <Link to="/menu" className="card">
-          <img src="/images/accueil/menu.png" alt="Menu" />
-          <h3>Nos produits</h3>
-        </Link>
+      <section className="home-section">
+        <h2>Nos catégories</h2>
 
-        <Link to="/secteurs" className="card">
-          <img src="/images/secteurs/3 secteurs.png" alt="Livraison" />
-          <h3>3 zones de livraison</h3>
+        <div className="category-home-grid">
+          <Link to="/menu" className="home-category-card">
+            <img src="/images/burgers/b2n.jpg" alt="Burgers" />
+            <h3>Burgers</h3>
+          </Link>
+
+          <Link to="/menu" className="home-category-card">
+            <img src="/images/wraps/crispy.jpg" alt="Wraps" />
+            <h3>Wraps</h3>
+          </Link>
+
+          <Link to="/menu" className="home-category-card">
+            <img src="/images/plats/pates-curry.png" alt="Plats" />
+            <h3>Plats</h3>
+          </Link>
+
+          <Link to="/menu" className="home-category-card">
+            <img src="/images/desserts/Tiramisu.png" alt="Desserts" />
+            <h3>Desserts</h3>
+          </Link>
+        </div>
+      </section>
+
+      <section className="delivery-banner">
+        <div>
+          <h2>3 zones de livraison</h2>
+            <img src="/images/secteurs/3 secteurs.png" />          
+          <p>Nord IDF, Nord Est IDF et Ouest IDF.</p>
+        </div>
+
+        <Link to="/secteurs" className="btn">
+          Voir les secteurs
         </Link>
       </section>
     </main>
