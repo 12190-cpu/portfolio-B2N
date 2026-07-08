@@ -1,9 +1,23 @@
-import { useState } from "react";
-import sectors from "../data/sectors";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 function Sectors() {
+  const [sectors, setSectors] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:5001/api/sectors")
+      .then((response) => {
+        setSectors(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching sectors:", error);
+      });
+  }, []);
+
   const [search, setSearch] = useState("");
   const [selectedSector, setSelectedSector] = useState(null);
+
 
   const filteredSectors = sectors.filter((sector) => {
     const text = `${sector.name} ${sector.cities.join(" ")}`.toLowerCase();
