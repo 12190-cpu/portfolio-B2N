@@ -1,12 +1,24 @@
-import { useState } from "react";
-import products from "../data/products";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const categories = ["Tous", "Burgers", "Wraps", "Plats", "Desserts", "Boissons"];
 
 function Menu() {
+  const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("Tous");
   const [selectedProduct, setSelectedProduct] = useState(null);
+
+  useEffect(() => {
+  axios
+    .get("http://localhost:5001/api/products")
+    .then((response) => {
+      setProducts(response.data);
+    })
+    .catch((error) => {
+      console.error("Erreur :", error);
+    });
+  }, []);
 
   const filteredProducts = products.filter((product) => {
     const searchText = `
