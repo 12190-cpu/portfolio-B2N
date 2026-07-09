@@ -1,134 +1,208 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+const API_URL = "http://localhost:5001/api";
+
+const emptyProductForm = {
+  name: "",
+  category: "Burgers",
+  price: "",
+  image: "",
+  ingredients: ""
+};
+
+const emptySectorForm = {
+  name: "",
+  image: "",
+  cities: "",
+  whatsapp: "",
+  snapchat: "",
+  phone: ""
+};
+
 function Admin() {
   const [products, setProducts] = useState([]);
-  const [editingId, setEditingId] = useState(null);
-  const [form, setForm] = useState({
-    name: "",
-    category: "Burgers",
-    price: "",
-    image: "",
-    ingredients: ""
-  });
+  const [sectors, setSectors] = useState([]);
+
+  const [productForm, setProductForm] = useState(emptyProductForm);
+  const [sectorForm, setSectorForm] = useState(emptySectorForm);
+
+  const [editingProductId, setEditingProductId] = useState(null);
+  const [editingSectorId, setEditingSectorId] = useState(null);
 
   useEffect(() => {
     fetchProducts();
+    fetchSectors();
   }, []);
 
   function fetchProducts() {
     axios
-      .get("http://localhost:5001/api/products")
-      .then((response) => {
-        setProducts(response.data);
-      })
-      .catch((error) => {
-        console.error("Erreur chargement produits :", error);
-      });
+      .get(`${API_URL}/products`)
+      .then((res) => setProducts(res.data))
+      .catch((err) => console.error("Erreur produits :", err));
   }
 
-  function handleChange(e) {
-    setForm({
-      ...form,
+  function fetchSectors() {
+    axios
+      .get(`${API_URL}/sectors`)
+      .then((res) => setSectors(res.data))
+      .catch((err) => console.error("Erreur secteurs :", err));
+  }
+
+  function handleProductChange(e) {
+    setProductForm({
+      ...productForm,
       [e.target.name]: e.target.value
     });
   }
 
-function handleSubmit(e) {
-  e.preventDefault();
-
-  const productData = {
-    ...form,
-    ingredients: form.ingredients.split(",").map((item) => item.trim())
-  };
-
-  if (editingId) {
-    axios
-      .put(`http://localhost:5001/api/products/${editingId}`, productData)
-      .then(() => {
-        fetchProducts();
-        resetForm();
-      })
-      .catch((error) => {
-        console.error("Erreur modification produit :", error);
-      });
-  } else {
-    axios
-      .post("http://localhost:5001/api/products", productData)
-      .then(() => {
-        fetchProducts();
-        resetForm();
-      })
-      .catch((error) => {
-        console.error("Erreur ajout produit :", error);
-      });
+  function handleSectorChange(e) {
+    setSectorForm({
+      ...sectorForm,
+      [e.target.name]: e.target.value
+    });
   }
-}
 
-function resetForm() {
-  setForm({
-    name: "",
-    category: "Burgers",
-    price: "",
-    image: "",
-    ingredients: ""
-  });
+  function submitProduct(e) {
+    e.preventDefault();
 
-  setEditingId(null);
-}
+    const productData = {
+      ...productForm,
+      ingredients: productForm.ingredients
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean)
+    };
+
+    if (editingProductId) {
+      axios
+        .put(`${API_URL}/products/${editingProductId}`, productData)
+        .then(() => {
+          fetchProducts();
+          resetProductForm();
+        });
+    } else {
+      axios.post(`${API_URL}/products`, productData).then(() => {
+        fetchProducts();
+        resetProductForm();
+      });
+    }
+  }
+
+  function submitSector(e) {
+    e.preventDefault();
+
+    const sectorData = {
+      ...sectorForm,
+      cities: sectorForm.cities
+        .split(",")
+        .map((city) => city.trim())
+        .filter(Boolean)
+    };
+
+    if (editingSectorId) {
+      axios
+        .put(`${API_URL}/sectors/${editingSectorId}`, sectorData)
+        .then(() => {
+          fetchSectors();
+          resetSectorForm();
+        });
+    } else {
+      axios.post(`${API_URL}/sectors`, sectorData).then(() => {
+        fetchSectors();
+        resetSectorForm();
+      });
+    }
+  }
+
+  function editProduct(product) {
+    setEditingProductId(product.id);
+    setProductForm({
+      name: product.name,
+      category: product.category,
+      price: product.price,
+      image: product.image,
+      ingredients: product.ingredients.join(", ")
+    });
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function editSector(sector) {
+    setEditingSectorId(sector.id);
+    setSectorForm({
+      name: sector.name,
+      image: sector.image,
+      cities: sector.cities.join(", "),
+      whatsapp: sector.whatsapp,
+      snapchat: sector.snapchat,
+      phone: sector.phone
+    });
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
 
   function deleteProduct(id) {
-    axios
-      .delete(`http://localhost:5001/api/products/${id}`)
-      .then(() => {
-        fetchProducts();
-      })
-      .catch((error) => {
-        console.error("Erreur suppression produit :", error);
-      });
+    if (!confirm("Supprimer ce produit ?")) return;
+
+    axios.delete(`${API_URL}/products/${id}`).then(() => {
+      fetchProducts();
+    });
   }
 
-function editProduct(product) {
-  setEditingId(product.id);
+  function deleteSector(id) {
+    if (!confirm("Supprimer ce secteur ?")) return;
 
-  setForm({
-    name: product.name,
-    category: product.category,
-    price: product.price,
-    image: product.image,
-    ingredients: product.ingredients.join(", ")
-  });
+    axios.delete(`${API_URL}/sectors/${id}`).then(() => {
+      fetchSectors();
+    });
+  }
 
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth"
-  });
-}
+  function resetProductForm() {
+    setProductForm(emptyProductForm);
+    setEditingProductId(null);
+  }
+
+  function resetSectorForm() {
+    setSectorForm(emptySectorForm);
+    setEditingSectorId(null);
+  }
 
   return (
     <main className="page admin-page">
       <h1>Dashboard Admin</h1>
       <p className="page-subtitle">
-        Gestion des produits Burger2Nuit depuis le backend Express.
+        Gestion complète du menu et des secteurs de livraison.
       </p>
 
-      <section className="admin-box">
-        <h2>Ajouter un produit</h2>
+      <section className="stats-grid">
+        <div className="stat-card">
+          <span>{products.length}</span>
+          <p>Produits</p>
+        </div>
 
-        <form className="admin-form" onSubmit={handleSubmit}>
+        <div className="stat-card">
+          <span>{sectors.length}</span>
+          <p>Secteurs</p>
+        </div>
+      </section>
+
+      <section className="admin-box">
+        <h2>{editingProductId ? "Modifier un produit" : "Ajouter un produit"}</h2>
+
+        <form className="admin-form" onSubmit={submitProduct}>
           <input
-            type="text"
             name="name"
             placeholder="Nom du produit"
-            value={form.name}
-            onChange={handleChange}
+            value={productForm.name}
+            onChange={handleProductChange}
             required
           />
 
           <select
             name="category"
-            value={form.category}
-            onChange={handleChange}
+            value={productForm.category}
+            onChange={handleProductChange}
           >
             <option value="Burgers">Burgers</option>
             <option value="Wraps">Wraps</option>
@@ -138,40 +212,38 @@ function editProduct(product) {
           </select>
 
           <input
-            type="text"
             name="price"
             placeholder="Prix : 8,00 €"
-            value={form.price}
-            onChange={handleChange}
+            value={productForm.price}
+            onChange={handleProductChange}
             required
           />
 
           <input
-            type="text"
             name="image"
             placeholder="/images/burgers/b2n.jpg"
-            value={form.image}
-            onChange={handleChange}
+            value={productForm.image}
+            onChange={handleProductChange}
             required
           />
 
           <textarea
             name="ingredients"
             placeholder="Ingrédients séparés par des virgules"
-            value={form.ingredients}
-            onChange={handleChange}
+            value={productForm.ingredients}
+            onChange={handleProductChange}
             required
           />
 
           <button type="submit">
-  {editingId ? "Modifier le produit" : "Ajouter le produit"}
-</button>
+            {editingProductId ? "Modifier le produit" : "Ajouter le produit"}
+          </button>
 
-{editingId && (
-  <button type="button" className="cancel-btn" onClick={resetForm}>
-    Annuler la modification
-  </button>
-  )}
+          {editingProductId && (
+            <button type="button" className="cancel-btn" onClick={resetProductForm}>
+              Annuler
+            </button>
+          )}
         </form>
       </section>
 
@@ -189,17 +261,101 @@ function editProduct(product) {
                 <strong>{product.price}</strong>
               </div>
 
-              <button
-                className="edit-btn"
-               onClick={() => editProduct(product)}
-              >
+              <button className="edit-btn" onClick={() => editProduct(product)}>
                 Modifier
               </button>
 
-              <button
-                className="delete-btn"
-                onClick={() => deleteProduct(product.id)}
-              >
+              <button className="delete-btn" onClick={() => deleteProduct(product.id)}>
+                Supprimer
+              </button>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="admin-box">
+        <h2>{editingSectorId ? "Modifier un secteur" : "Ajouter un secteur"}</h2>
+
+        <form className="admin-form" onSubmit={submitSector}>
+          <input
+            name="name"
+            placeholder="Nom du secteur"
+            value={sectorForm.name}
+            onChange={handleSectorChange}
+            required
+          />
+
+          <input
+            name="image"
+            placeholder="/images/secteurs/nord.jpg"
+            value={sectorForm.image}
+            onChange={handleSectorChange}
+            required
+          />
+
+          <textarea
+            name="cities"
+            placeholder="Villes séparées par des virgules"
+            value={sectorForm.cities}
+            onChange={handleSectorChange}
+            required
+          />
+
+          <input
+            name="whatsapp"
+            placeholder="Lien WhatsApp"
+            value={sectorForm.whatsapp}
+            onChange={handleSectorChange}
+            required
+          />
+
+          <input
+            name="snapchat"
+            placeholder="Lien Snapchat"
+            value={sectorForm.snapchat}
+            onChange={handleSectorChange}
+            required
+          />
+
+          <input
+            name="phone"
+            placeholder="tel:+33600000000"
+            value={sectorForm.phone}
+            onChange={handleSectorChange}
+            required
+          />
+
+          <button type="submit">
+            {editingSectorId ? "Modifier le secteur" : "Ajouter le secteur"}
+          </button>
+
+          {editingSectorId && (
+            <button type="button" className="cancel-btn" onClick={resetSectorForm}>
+              Annuler
+            </button>
+          )}
+        </form>
+      </section>
+
+      <section className="admin-box">
+        <h2>Secteurs existants</h2>
+
+        <div className="admin-list">
+          {sectors.map((sector) => (
+            <article className="admin-item" key={sector.id}>
+              <img src={sector.image} alt={sector.name} />
+
+              <div>
+                <h3>{sector.name}</h3>
+                <p>{sector.cities.length} villes</p>
+                <strong>{sector.cities.slice(0, 4).join(", ")}</strong>
+              </div>
+
+              <button className="edit-btn" onClick={() => editSector(sector)}>
+                Modifier
+              </button>
+
+              <button className="delete-btn" onClick={() => deleteSector(sector.id)}>
                 Supprimer
               </button>
             </article>
