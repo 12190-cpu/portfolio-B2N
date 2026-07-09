@@ -34,31 +34,48 @@ function Admin() {
     });
   }
 
-  function handleSubmit(e) {
-    e.preventDefault();
+function handleSubmit(e) {
+  e.preventDefault();
 
-    const newProduct = {
-      ...form,
-      ingredients: form.ingredients.split(",").map((item) => item.trim())
-    };
+  const productData = {
+    ...form,
+    ingredients: form.ingredients.split(",").map((item) => item.trim())
+  };
 
+  if (editingId) {
     axios
-      .post("http://localhost:5001/api/products", newProduct)
+      .put(`http://localhost:5001/api/products/${editingId}`, productData)
       .then(() => {
         fetchProducts();
-
-        setForm({
-          name: "",
-          category: "Burgers",
-          price: "",
-          image: "",
-          ingredients: ""
-        });
+        resetForm();
+      })
+      .catch((error) => {
+        console.error("Erreur modification produit :", error);
+      });
+  } else {
+    axios
+      .post("http://localhost:5001/api/products", productData)
+      .then(() => {
+        fetchProducts();
+        resetForm();
       })
       .catch((error) => {
         console.error("Erreur ajout produit :", error);
       });
   }
+}
+
+function resetForm() {
+  setForm({
+    name: "",
+    category: "Burgers",
+    price: "",
+    image: "",
+    ingredients: ""
+  });
+
+  setEditingId(null);
+}
 
   function deleteProduct(id) {
     axios
@@ -70,6 +87,23 @@ function Admin() {
         console.error("Erreur suppression produit :", error);
       });
   }
+
+function editProduct(product) {
+  setEditingId(product.id);
+
+  setForm({
+    name: product.name,
+    category: product.category,
+    price: product.price,
+    image: product.image,
+    ingredients: product.ingredients.join(", ")
+  });
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
 
   return (
     <main className="page admin-page">
@@ -129,7 +163,15 @@ function Admin() {
             required
           />
 
-          <button type="submit">Ajouter le produit</button>
+          <button type="submit">
+  {editingId ? "Modifier le produit" : "Ajouter le produit"}
+</button>
+
+{editingId && (
+  <button type="button" className="cancel-btn" onClick={resetForm}>
+    Annuler la modification
+  </button>
+  )}
         </form>
       </section>
 
@@ -146,6 +188,13 @@ function Admin() {
                 <p>{product.category}</p>
                 <strong>{product.price}</strong>
               </div>
+
+              <button
+                className="edit-btn"
+               onClick={() => editProduct(product)}
+              >
+                Modifier
+              </button>
 
               <button
                 className="delete-btn"
