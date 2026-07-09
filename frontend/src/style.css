@@ -621,4 +621,89 @@ footer {
   justify-content: space-between;
 }
 
+.admin-form {
+  display: grid;
+  gap: 15px;
+}
+
+.admin-form input,
+.admin-form select,
+.admin-form textarea {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.admin-form textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.admin-form button {
+  background: #ffcc00;
+  color: #000;
+  border: none;
+  padding: 14px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.admin-list {
+  display: grid;
+  gap: 15px;
+}
+
+.admin-item {
+  display: grid;
+  grid-template-columns: 90px 1fr auto;
+  align-items: center;
+  gap: 15px;
+  background: #111;
+  padding: 15px;
+  border-radius: 12px;
+  border: 1px solid #333;
+}
+
+.admin-item img {
+  width: 90px;
+  height: 70px;
+  object-fit: contain;
+  background: #222;
+  border-radius: 8px;
+  padding: 5px;
+}
+
+.admin-item h3 {
+  margin: 0;
+  color: #ffcc00;
+}
+
+.admin-item p {
+  margin: 5px 0;
+  color: #ccc;
+}
+
+.delete-btn {
+  background: #ff3b30;
+  color: white;
+  border: none;
+  padding: 11px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+@media (max-width: 700px) {
+  .admin-item {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-item img {
+    width: 100%;
+  }
+}
+
 }
