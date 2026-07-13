@@ -2,11 +2,17 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 
+import { connectDatabase } from "./config/database.js";
+
 import productsRoutes from "./routes/products.routes.js";
 import sectorsRoutes from "./routes/sectors.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 
-dotenv.config();
+dotenv.config({ path: "./.env" });
+
+console.log("MONGO_URI présente :", Boolean(process.env.MONGO_URI));
+
+await connectDatabase();
 
 const app = express();
 const PORT = process.env.PORT || 5001;
