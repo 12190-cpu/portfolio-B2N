@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import sectorService from "../services/sector.service";
 
 function Sectors() {
   const [sectors, setSectors] = useState([]);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5001/api/sectors")
+    sectorService
+      .getAll()
       .then((response) => {
         setSectors(response.data);
       })

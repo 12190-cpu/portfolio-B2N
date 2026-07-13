@@ -1,26 +1,34 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import authService from "../services/auth.service";
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   function handleSubmit(e) {
     e.preventDefault();
+    setError("");
 
-    if (username === "admin" && password === "admin123") {
-      localStorage.setItem("admin", "true");
-      navigate("/admin");
-    } else {
-      alert("Identifiants incorrects");
-    }
+    authService
+      .login(username, password)
+      .then((response) => {
+        localStorage.setItem("token", response.data.token);
+        navigate("/admin");
+      })
+      .catch(() => {
+        setError("Identifiants incorrects");
+      });
   }
 
   return (
     <main className="login-page">
       <form className="login-form" onSubmit={handleSubmit}>
         <h1>Connexion Admin</h1>
+
+        {error && <p className="error-message">{error}</p>}
 
         <input
           type="text"
@@ -37,8 +45,6 @@ function Login() {
         />
 
         <button type="submit">Se connecter</button>
-
-        <p className="hint">Admin : admin / admin123</p>
       </form>
     </main>
   );

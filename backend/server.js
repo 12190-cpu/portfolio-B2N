@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 
 import productsRoutes from "./routes/products.routes.js";
 import sectorsRoutes from "./routes/sectors.routes.js";
+import authRoutes from "./routes/auth.routes.js";
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ app.get("/api/health", (req, res) => {
 
 app.use("/api/products", productsRoutes);
 app.use("/api/sectors", sectorsRoutes);
+app.use("/api/auth", authRoutes);
 
 app.listen(PORT, () => {
   console.log(`Serveur lancé sur http://localhost:${PORT}`);

@@ -844,4 +844,27 @@ footer {
   }
 }
 
+.error-message {
+  background: #ff3b30;
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+.logout-btn {
+  background: #ff3b30;
+  color: white;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 25px;
+}
+
+.logout-btn:hover {
+  opacity: 0.85;
+}
+
 }

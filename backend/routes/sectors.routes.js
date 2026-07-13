@@ -1,4 +1,5 @@
 import express from "express";
+import { protect } from "../middleware/auth.middleware.js";
 
 import {
   getSectors,
@@ -11,13 +12,10 @@ import {
 const router = express.Router();
 
 router.get("/", getSectors);
-
 router.get("/:id", getSectorById);
 
-router.post("/", createSector);
-
-router.put("/:id", updateSector);
-
-router.delete("/:id", deleteSector);
+router.post("/", protect, createSector);
+router.put("/:id", protect, updateSector);
+router.delete("/:id", protect, deleteSector);
 
 export default router;

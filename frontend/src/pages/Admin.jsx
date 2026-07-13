@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-const API_URL = "http://localhost:5001/api";
+import productService from "../services/product.service";
+import sectorService from "../services/sector.service";
+import authService from "../services/auth.service";
 
 const emptyProductForm = {
   name: "",
@@ -21,6 +23,8 @@ const emptySectorForm = {
 };
 
 function Admin() {
+  const navigate = useNavigate();
+
   const [products, setProducts] = useState([]);
   const [sectors, setSectors] = useState([]);
 
@@ -36,15 +40,15 @@ function Admin() {
   }, []);
 
   function fetchProducts() {
-    axios
-      .get(`${API_URL}/products`)
+    productService
+      .getAll()
       .then((res) => setProducts(res.data))
       .catch((err) => console.error("Erreur produits :", err));
   }
 
   function fetchSectors() {
-    axios
-      .get(`${API_URL}/sectors`)
+    sectorService
+      .getAll()
       .then((res) => setSectors(res.data))
       .catch((err) => console.error("Erreur secteurs :", err));
   }
@@ -74,21 +78,20 @@ function Admin() {
         .filter(Boolean)
     };
 
-    if (editingProductId) {
-      axios
-        .put(`${API_URL}/products/${editingProductId}`, productData)
-        .then(() => {
-          fetchProducts();
-          resetProductForm();
-        });
-    } else {
-      axios.post(`${API_URL}/products`, productData).then(() => {
+    const request = editingProductId
+      ? productService.update(editingProductId, productData)
+      : productService.create(productData);
+
+    request
+      .then(() => {
         fetchProducts();
         resetProductForm();
+      })
+      .catch((error) => {
+        console.error("Erreur produit :", error);
       });
-    }
   }
-
+  
   function submitSector(e) {
     e.preventDefault();
 
@@ -100,19 +103,18 @@ function Admin() {
         .filter(Boolean)
     };
 
-    if (editingSectorId) {
-      axios
-        .put(`${API_URL}/sectors/${editingSectorId}`, sectorData)
-        .then(() => {
-          fetchSectors();
-          resetSectorForm();
-        });
-    } else {
-      axios.post(`${API_URL}/sectors`, sectorData).then(() => {
+    const request = editingSectorId
+      ? sectorService.update(editingSectorId, sectorData)
+      : sectorService.create(sectorData);
+
+    request
+      .then(() => {
         fetchSectors();
         resetSectorForm();
+      })
+      .catch((error) => {
+        console.error("Erreur secteur :", error);
       });
-    }
   }
 
   function editProduct(product) {
@@ -143,19 +145,33 @@ function Admin() {
   }
 
   function deleteProduct(id) {
-    if (!confirm("Supprimer ce produit ?")) return;
+  if (!window.confirm("Supprimer ce produit ?")) {
+    return;
+  }
 
-    axios.delete(`${API_URL}/products/${id}`).then(() => {
+  productService
+    .remove(id)
+    .then(() => {
       fetchProducts();
+    })
+    .catch((error) => {
+      console.error("Erreur suppression produit :", error);
     });
   }
 
   function deleteSector(id) {
-    if (!confirm("Supprimer ce secteur ?")) return;
+    if (!window.confirm("Supprimer ce secteur ?")) {
+      return;
+    }
 
-    axios.delete(`${API_URL}/sectors/${id}`).then(() => {
-      fetchSectors();
-    });
+    sectorService
+      .remove(id)
+      .then(() => {
+        fetchSectors();
+      })
+      .catch((error) => {
+        console.error("Erreur suppression secteur :", error);
+      });
   }
 
   function resetProductForm() {
@@ -168,12 +184,20 @@ function Admin() {
     setEditingSectorId(null);
   }
 
+  function handleLogout() {
+    authService.logout();
+    navigate("/login");
+  }
+
   return (
     <main className="page admin-page">
       <h1>Dashboard Admin</h1>
       <p className="page-subtitle">
         Gestion complète du menu et des secteurs de livraison.
       </p>
+      <button className="logout-btn" onClick={handleLogout}>
+        Se déconnecter
+      </button>
 
       <section className="stats-grid">
         <div className="stat-card">

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import productService from "../services/product.service";
 
 const categories = ["Tous", "Burgers", "Wraps", "Plats", "Desserts", "Boissons"];
 
@@ -10,13 +10,13 @@ function Menu() {
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
-  axios
-    .get("http://localhost:5001/api/products")
+   productService
+    .getAll()
     .then((response) => {
       setProducts(response.data);
     })
     .catch((error) => {
-      console.error("Erreur :", error);
+      console.error("Erreur lors du chargement des produits :", error);
     });
   }, []);
 
