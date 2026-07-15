@@ -1,88 +1,90 @@
-import sectors from "../data/sectors.js";
+import Sector from "../models/Sector.js";
 
-/*
-=========================
-GET ALL SECTORS
-=========================
-*/
-export const getSectors = (req, res) => {
-  res.status(200).json(sectors);
-};
+export const getSectors = async (req, res) => {
+  try {
+    const sectors = await Sector.find().sort({ createdAt: -1 });
 
-/*
-=========================
-GET SECTOR BY ID
-=========================
-*/
-export const getSectorById = (req, res) => {
-  const id = Number(req.params.id);
-
-  const sector = sectors.find((sector) => sector.id === id);
-
-  if (!sector) {
-    return res.status(404).json({
-      message: "Secteur introuvable"
+    res.status(200).json(sectors);
+  } catch (error) {
+    res.status(500).json({
+      message: "Erreur lors de la récupération des secteurs"
     });
   }
-
-  res.status(200).json(sector);
 };
 
-/*
-=========================
-CREATE SECTOR
-=========================
-*/
-export const createSector = (req, res) => {
-  const newSector = req.body;
+export const getSectorById = async (req, res) => {
+  try {
+    const sector = await Sector.findById(req.params.id);
 
-  newSector.id = sectors.length + 1;
+    if (!sector) {
+      return res.status(404).json({
+        message: "Secteur introuvable"
+      });
+    }
 
-  sectors.push(newSector);
-
-  res.status(201).json(newSector);
-};
-
-/*
-=========================
-UPDATE SECTOR
-=========================
-*/
-export const updateSector = (req, res) => {
-  const id = Number(req.params.id);
-
-  const sector = sectors.find((sector) => sector.id === id);
-
-  if (!sector) {
-    return res.status(404).json({
-      message: "Secteur introuvable"
+    res.status(200).json(sector);
+  } catch (error) {
+    res.status(400).json({
+      message: "Identifiant secteur invalide"
     });
   }
-
-  Object.assign(sector, req.body);
-
-  res.status(200).json(sector);
 };
 
-/*
-=========================
-DELETE SECTOR
-=========================
-*/
-export const deleteSector = (req, res) => {
-  const id = Number(req.params.id);
+export const createSector = async (req, res) => {
+  try {
+    const sector = await Sector.create(req.body);
 
-  const index = sectors.findIndex((sector) => sector.id === id);
-
-  if (index === -1) {
-    return res.status(404).json({
-      message: "Secteur introuvable"
+    res.status(201).json(sector);
+  } catch (error) {
+    res.status(400).json({
+      message: "Impossible de créer le secteur",
+      error: error.message
     });
   }
+};
 
-  sectors.splice(index, 1);
+export const updateSector = async (req, res) => {
+  try {
+    const sector = await Sector.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        new: true,
+        runValidators: true
+      }
+    );
 
-  res.status(200).json({
-    message: "Secteur supprimé"
-  });
+    if (!sector) {
+      return res.status(404).json({
+        message: "Secteur introuvable"
+      });
+    }
+
+    res.status(200).json(sector);
+  } catch (error) {
+    res.status(400).json({
+      message: "Impossible de modifier le secteur",
+      error: error.message
+    });
+  }
+};
+
+export const deleteSector = async (req, res) => {
+  try {
+    const sector = await Sector.findByIdAndDelete(req.params.id);
+
+    if (!sector) {
+      return res.status(404).json({
+        message: "Secteur introuvable"
+      });
+    }
+
+    res.status(200).json({
+      message: "Secteur supprimé"
+    });
+  } catch (error) {
+    res.status(400).json({
+      message: "Impossible de supprimer le secteur"
+    });
+  }
 };

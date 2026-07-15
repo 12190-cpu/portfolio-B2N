@@ -10,8 +10,6 @@ import authRoutes from "./routes/auth.routes.js";
 
 dotenv.config({ path: "./.env" });
 
-console.log("MONGO_URI présente :", Boolean(process.env.MONGO_URI));
-
 await connectDatabase();
 
 const app = express();
