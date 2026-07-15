@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import path from "path";
+import { fileURLToPath } from "url";
 
 import { connectDatabase } from "./config/database.js";
 
@@ -9,6 +10,9 @@ import productsRoutes from "./routes/products.routes.js";
 import sectorsRoutes from "./routes/sectors.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import uploadRoutes from "./routes/upload.routes.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config({ path: "./.env" });
 
@@ -20,7 +24,10 @@ const PORT = process.env.PORT || 5001;
 app.use(cors());
 app.use(express.json());
 
-app.use("/uploads", express.static(path.resolve("uploads")));
+app.use(
+  "/uploads",
+  express.static(path.join(__dirname, "uploads"))
+);
 
 app.get("/", (req, res) => {
   res.json({ message: "API Burger2Nuit fonctionne" });

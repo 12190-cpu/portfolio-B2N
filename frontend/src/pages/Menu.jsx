@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import productService from "../services/product.service";
+import { getImageUrl } from "../utils/imageUrl";
 
 const categories = ["Tous", "Burgers", "Wraps", "Plats", "Desserts", "Boissons"];
 
@@ -84,14 +85,12 @@ function Menu() {
                 key={`${product.name}-${index}`}
                 onClick={() => setSelectedProduct(product)}
               >
+
               <img
-                src={
-                  product.image.startsWith("/uploads/")
-                    ? `http://localhost:5001${product.image}`
-                      : product.image
-                }
+                src={getImageUrl(product.image)}
                 alt={product.name}
               />
+              
                 <div>
                   <span>{product.category}</span>
                   <h3>{product.name}</h3>
@@ -115,11 +114,7 @@ function Menu() {
             </button>
 
             <img
-              src={
-                selectedProduct.image.startsWith("/uploads/")
-                  ? `http://localhost:5001${selectedProduct.image}`
-                  : selectedProduct.image
-              }
+              src={getImageUrl(selectedProduct.image)}
               alt={selectedProduct.name}
             />
 
