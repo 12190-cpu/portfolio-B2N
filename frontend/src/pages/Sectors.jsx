@@ -52,7 +52,14 @@ function Sectors() {
             key={sector.name}
             onClick={() => setSelectedSector(sector)}
           >
-            <img src={sector.image} alt={sector.name} />
+            <img
+              src={
+                sector.image.startsWith("/uploads/")
+                  ? `http://localhost:5001${sector.image}`
+                  : sector.image
+              }
+              alt={sector.name}
+            />
 
             <div className="sector-content">
               <h2>{sector.name}</h2>

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import productService from "../services/product.service";
 import sectorService from "../services/sector.service";
 import authService from "../services/auth.service";
+import uploadService from "../services/upload.service";
 
 const emptyProductForm = {
   name: "",
@@ -33,6 +34,10 @@ function Admin() {
 
   const [editingProductId, setEditingProductId] = useState(null);
   const [editingSectorId, setEditingSectorId] = useState(null);
+
+  const [productImageFile, setProductImageFile] = useState(null);
+  const [sectorImageFile, setSectorImageFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     fetchProducts();
@@ -66,55 +71,80 @@ function Admin() {
       [e.target.name]: e.target.value
     });
   }
-
-  function submitProduct(e) {
-    e.preventDefault();
-
-    const productData = {
-      ...productForm,
-      ingredients: productForm.ingredients
-        .split(",")
-        .map((item) => item.trim())
-        .filter(Boolean)
-    };
-
-    const request = editingProductId
-      ? productService.update(editingProductId, productData)
-      : productService.create(productData);
-
-    request
-      .then(() => {
-        fetchProducts();
-        resetProductForm();
-      })
-      .catch((error) => {
-        console.error("Erreur produit :", error);
-      });
-  }
   
-  function submitSector(e) {
+  async function submitProduct(e) {
     e.preventDefault();
 
-    const sectorData = {
-      ...sectorForm,
-      cities: sectorForm.cities
-        .split(",")
-        .map((city) => city.trim())
-        .filter(Boolean)
-    };
+    setUploading(true);
 
-    const request = editingSectorId
-      ? sectorService.update(editingSectorId, sectorData)
-      : sectorService.create(sectorData);
+    try {
+     let imagePath = productForm.image;
 
-    request
-      .then(() => {
-        fetchSectors();
-        resetSectorForm();
-      })
-      .catch((error) => {
-        console.error("Erreur secteur :", error);
-      });
+      if (productImageFile) {
+        const uploadResponse = await uploadService.uploadImage(productImageFile);
+        imagePath = uploadResponse.data.imageUrl;
+      }
+
+      const productData = {
+       ...productForm,
+        image: imagePath,
+        ingredients: productForm.ingredients
+          .split(",")
+          .map((item) => item.trim())
+          .filter(Boolean)
+      };
+
+      if (editingProductId) {
+        await productService.update(editingProductId, productData);
+      } else {
+        await productService.create(productData);
+      }
+
+     fetchProducts();
+     resetProductForm();
+
+   } catch (error) {
+    console.error(error);
+   } finally {
+    setUploading(false);
+   }
+  }
+
+  async function submitSector(e) {
+    e.preventDefault();
+
+    setUploading(true);
+
+    try {
+      let imagePath = sectorForm.image;
+
+      if (sectorImageFile) {
+        const uploadResponse = await uploadService.uploadImage(sectorImageFile);
+        imagePath = uploadResponse.data.imageUrl;
+      }
+
+      const sectorData = {
+        ...sectorForm,
+        image: imagePath,
+        cities: sectorForm.cities
+          .split(",")
+          .map((item) => item.trim())
+          .filter(Boolean)
+      };
+
+      if (editingSectorId) {
+        await sectorService.update(editingSectorId, sectorData);
+      } else {
+        await sectorService.create(sectorData);
+      }
+
+      fetchSectors();
+      resetSectorForm();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setUploading(false);
+    }
   }
 
   function editProduct(product) {
@@ -177,11 +207,13 @@ function Admin() {
   function resetProductForm() {
     setProductForm(emptyProductForm);
     setEditingProductId(null);
+    setProductImageFile(null);
   }
 
   function resetSectorForm() {
     setSectorForm(emptySectorForm);
     setEditingSectorId(null);
+    setSectorImageFile(null);
   }
 
   function handleLogout() {
@@ -244,12 +276,24 @@ function Admin() {
           />
 
           <input
-            name="image"
-            placeholder="/images/burgers/b2n.jpg"
-            value={productForm.image}
-            onChange={handleProductChange}
-            required
+            type="file"
+            accept="image/png,image/jpeg,image/webp"
+            onChange={(e) => {
+              setProductImageFile(e.target.files?.[0] || null);
+            }}
           />
+
+          {productForm.image && (
+            <img
+              className="admin-image-preview"
+              src={
+                productForm.image.startsWith("/uploads/")
+                  ? `http://localhost:5001${productForm.image}`
+                  : productForm.image
+                }
+                alt="Aperçu du produit"
+              />
+            )}
 
           <textarea
             name="ingredients"
@@ -259,8 +303,12 @@ function Admin() {
             required
           />
 
-          <button type="submit">
-            {editingProductId ? "Modifier le produit" : "Ajouter le produit"}
+          <button type="submit" disabled={uploading}>
+            {uploading
+              ? "Envoi en cours..." 
+              : editingProductId 
+                ? "Modifier le produit" 
+                : "Ajouter le produit"}
           </button>
 
           {editingProductId && (
@@ -277,7 +325,14 @@ function Admin() {
         <div className="admin-list">
           {products.map((product) => (
             <article className="admin-item" key={product.id}>
-              <img src={product.image} alt={product.name} />
+              <img 
+                src={
+                  product.image.startsWith("/uploads/")
+                    ? `http://localhost:5001${product.image}`
+                    : product.image
+                }
+                alt={product.name}
+              />
 
               <div>
                 <h3>{product.name}</h3>
@@ -310,12 +365,24 @@ function Admin() {
           />
 
           <input
-            name="image"
-            placeholder="/images/secteurs/nord.jpg"
-            value={sectorForm.image}
-            onChange={handleSectorChange}
-            required
+            type="file"
+            accept="image/png,image/jpeg,image/webp"
+            onChange={(e) => {
+              setSectorImageFile(e.target.files?.[0] || null);
+            }}
           />
+          
+          {sectorForm.image && (
+            <img
+              className="admin-image-preview"
+              src={
+                sectorForm.image.startsWith("/uploads/")
+                  ? `http://localhost:5001${sectorForm.image}`
+                  : sectorForm.image
+                }
+                alt="Aperçu du secteur"
+              />
+            )}
 
           <textarea
             name="cities"
@@ -349,8 +416,12 @@ function Admin() {
             required
           />
 
-          <button type="submit">
-            {editingSectorId ? "Modifier le secteur" : "Ajouter le secteur"}
+          <button type="submit" disabled={uploading}>
+            {uploading 
+            ? "Envoi en cours..." 
+            : editingSectorId 
+              ? "Modifier le secteur" 
+              : "Ajouter le secteur"}
           </button>
 
           {editingSectorId && (
@@ -367,7 +438,14 @@ function Admin() {
         <div className="admin-list">
           {sectors.map((sector) => (
             <article className="admin-item" key={sector.id}>
-              <img src={sector.image} alt={sector.name} />
+              <img
+                src={
+                  sector.image.startsWith("/uploads/")
+                    ? `http://localhost:5001${sector.image}`
+                    : sector.image
+                }
+                alt={sector.name}
+              />
 
               <div>
                 <h3>{sector.name}</h3>

@@ -84,8 +84,14 @@ function Menu() {
                 key={`${product.name}-${index}`}
                 onClick={() => setSelectedProduct(product)}
               >
-                <img src={product.image} alt={product.name} />
-
+              <img
+                src={
+                  product.image.startsWith("/uploads/")
+                    ? `http://localhost:5001${product.image}`
+                      : product.image
+                }
+                alt={product.name}
+              />
                 <div>
                   <span>{product.category}</span>
                   <h3>{product.name}</h3>
@@ -108,7 +114,14 @@ function Menu() {
               ×
             </button>
 
-            <img src={selectedProduct.image} alt={selectedProduct.name} />
+            <img
+              src={
+                selectedProduct.image.startsWith("/uploads/")
+                  ? `http://localhost:5001${selectedProduct.image}`
+                  : selectedProduct.image
+              }
+              alt={selectedProduct.name}
+            />
 
             <h2>{selectedProduct.name}</h2>
             <p className="modal-category">{selectedProduct.category}</p>

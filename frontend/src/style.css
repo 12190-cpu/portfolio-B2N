@@ -867,4 +867,19 @@ footer {
   opacity: 0.85;
 }
 
+.admin-image-preview {
+  width: 180px;
+  height: 140px;
+  object-fit: contain;
+  background: #222;
+  border: 1px solid #444;
+  border-radius: 10px;
+  padding: 8px;
+}
+
+.admin-form button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
 }
